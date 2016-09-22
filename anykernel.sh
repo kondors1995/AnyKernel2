@@ -8,14 +8,14 @@ do.devicecheck=1
 do.initd=1
 do.modules=0
 do.cleanup=1
-device.name1=maguro
-device.name2=toro
-device.name3=toroplus
+device.name1=Y550-L01
+device.name2=Y550-L02
+device.name3=Y550-L03
 device.name4=
 device.name5=
 
 # shell variables
-block=/dev/block/platform/omap/omap_hsmmc.0/by-name/boot;
+block=/dev/block/bootdevice/by-name/boot;
 
 ## end setup
 
