@@ -15,6 +15,7 @@ device.name2=redmi note 4
 device.name3=Rendi Nude 4
 device.name4=Redmi Note 4
 device.name5=Redmi Note 4x
+supported.sdk=27
 } # end properties
 
 # shell variables
