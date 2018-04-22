@@ -70,10 +70,17 @@ if [ -f /tmp/anykernel/version ]; then
   ui_print "$(cat /tmp/anykernel/version)";
   ui_print " ";
 fi;
-ui_print " ";
-ui_print "AnyKernel2 by osm0sis @ xda-developers";
-ui_print " ";
-ui_print " ";
+ui_print " 					  ";
+ui_print " AnyKernel2 by osm0sis @ xda-developers ";
+ui_print "                                        ";
+ui_print "                                        ";
+ui_print " Revolt:Meltdown For MIDO by NATO66613  ";
+ui_print "      ADDING DARK MAGIC TO DEVICE       ";
+ui_print "             WIZARD ON WORK             ";
+ui_print "                  ....                  ";
+ui_print "       STALKERS ARE ENTERING ZONE       ";
+ui_print " 					  ";
+ui_print " 					  ";
 
 umount /system 2>/dev/null;
 umount /vendor 2>/dev/null;
