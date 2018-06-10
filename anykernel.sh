@@ -36,11 +36,12 @@ dump_boot;
 # begin ramdisk changes
 
 # init.rc
-insert_line init.rc 'kud' before 'on early-init' 'import /init.kud.rc';
+insert_line init.rc 'kud' before 'on early-init' 'import /init.rev.rc';
+#Add Spectrum
+insert_line init.rc "import /init.spectrum.rc" after "import /init.trace.rc" "import /init.spectrum.rc";
 
 # end ramdisk changes
 
 write_boot;
 
 ## end install
-
