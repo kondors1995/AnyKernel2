@@ -51,6 +51,20 @@ on property:sys.boot_completed=1
     write /dev/stune/rt/schedtune.prefer_idle 1
     write /dev/stune/rt/schedtune.boost 30
 
+    # Congigure Simple Thermal driver
+    write /sys/kernel/msm_thermal/enabled 0
+    write /sys/kernel/msm_thermal/zone0 "2016000 1958400 42 41"
+    write /sys/kernel/msm_thermal/zone1 "1958400 2016000 43 42"
+    write /sys/kernel/msm_thermal/zone2 "1804800 1958400 46 43"
+    write /sys/kernel/msm_thermal/zone3 "1689600 1804800 48 46"
+    write /sys/kernel/msm_thermal/zone4 "1401600 1689600 51 48"
+    write /sys/kernel/msm_thermal/zone5 "1209600 1401600 54 51"
+    write /sys/kernel/msm_thermal/zone6 "1036800 1209600 56 54"
+    write /sys/kernel/msm_thermal/zone7 "806400 1036800 58 56"
+    write /sys/kernel/msm_thermal/zone8 "652800 806400 60 58"
+    write /sys/kernel/msm_thermal/sampling_ms 8000
+    write /sys/kernel/msm_thermal/enabled 1
+
     # Adjust LMK Values
     write /sys/module/lowmemorykiller/parameters/minfree "18432,23040,27648,32256,55296,80640"
 
