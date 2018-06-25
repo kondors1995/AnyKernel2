@@ -8,15 +8,10 @@ on late-fs
     write /sys/block/dm-1/queue/iosched/slice_idle 0
     write /sys/block/sda/queue/iosched/slice_idle 0
 
-
 # Run post-boot script after Qualcomm's post_boot shell script
 on property:init.svc.qcom-post-boot=stopped
     # If the selected governor is valid, apply tunables
     setprop sys.cpufreq.governor ${persist.sys.cpufreq.governor}
-
-    # according to Qcom this legacy value improves first launch latencies
-    # stock value is 512k
-    setprop dalvik.vm.heapminfree 2m
 
     # Reduce maxfreq to 1804 MHz (originally was 1689 MHz)
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1804800
@@ -44,19 +39,15 @@ on property:sys.cpufreq.governor=schedutil
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor schedutil
     write /sys/devices/system/cpu/cpufreq/schedutil/up_rate_limit_us 350
     write /sys/devices/system/cpu/cpufreq/schedutil/down_rate_limit_us 1500
-    write /sys/devices/system/cpu/cpufreq/schedutil/iowait_boost_enable 1
+    write /sys/devices/system/cpu/cpufreq/schedutil/iowait_boost_enable 0
 
     # Enable input boost configuration
-    write /sys/module/cpu_boost/parameters/input_boost_enabled 1
     write /sys/module/cpu_boost/parameters/input_boost_freq "0:1036800"
     write /sys/module/cpu_boost/parameters/dynamic_stune_boost 15
-    write /sys/module/cpu_boost/parameters/input_boost_ms 175
+    write /sys/module/cpu_boost/parameters/input_boost_ms 100
 
     # set default schedTune value for foreground/top-app (only affects EAS)
     write /dev/stune/foreground/schedtune.prefer_idle 1
-    write /dev/stune/foreground/schedtune.boost 0
-    write /dev/stune/background/schedtune.boost 0
-    write /dev/stune/background/schedtune.prefer_idle 0
     write /dev/stune/top-app/schedtune.prefer_idle 1
     write /dev/stune/top-app/schedtune.boost 1
     write /dev/stune/rt/schedtune.prefer_idle 1
