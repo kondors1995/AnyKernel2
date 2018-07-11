@@ -20,6 +20,14 @@ on property:sys.boot_completed=1
     # stock value is 512k
     setprop dalvik.vm.heapminfree 2m
 
+    # Setup cpusets
+    write /dev/cpuset/top-app/cpus 0-7
+    write /dev/cpuset/foreground/boost/cpus 0-3,6-7
+    write /dev/cpuset/foreground/cpus 0-3,6-7
+    write /dev/cpuset/background/cpus 0-1
+    write /dev/cpuset/system-background/cpus 0-3
+    write /dev/cpuset/camera-daemon/cpus 0-3
+
 
     # Enable Laptop Mode
     write /proc/sys/vm/laptop_mode 1
@@ -105,9 +113,13 @@ on property:persist.spectrum.profile=0
     write /sys/module/cpu_boost/parameters/dynamic_stune_boost 1
     write /sys/module/cpu_boost/parameters/input_boost_ms 100
 
-    # ZRAM
-    mkswap /dev/block/zram0
-    swapon /dev/block/zram0
+    # Setup cpusets
+    write /dev/cpuset/top-app/cpus 0-7
+    write /dev/cpuset/foreground/boost/cpus 0-3,6-7
+    write /dev/cpuset/foreground/cpus 0-3,6-7
+    write /dev/cpuset/background/cpus 0-1
+    write /dev/cpuset/system-background/cpus 0-3
+    write /dev/cpuset/camera-daemon/cpus 0-3
 
 # Performance (based on DrunkSauce Lite)
 on property:persist.spectrum.profile=1
