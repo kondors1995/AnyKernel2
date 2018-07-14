@@ -20,15 +20,6 @@ on property:sys.boot_completed=1
     # stock value is 512k
     setprop dalvik.vm.heapminfree 2m
 
-    # Setup cpusets
-    write /dev/cpuset/top-app/cpus 0-7
-    write /dev/cpuset/foreground/boost/cpus 0-3,6-7
-    write /dev/cpuset/foreground/cpus 0-3,6-7
-    write /dev/cpuset/background/cpus 0-1
-    write /dev/cpuset/system-background/cpus 0-3
-    write /dev/cpuset/camera-daemon/cpus 0-3
-
-
     # Enable Laptop Mode
     write /proc/sys/vm/laptop_mode 1
     # Dont treat storage as rotational
@@ -46,33 +37,6 @@ on property:sys.boot_completed=1
 
     write /proc/sys/vm/page-cluster 0
 
-    ### CPU_Boost
-    write /sys/module/cpu_boost/parameters/input_boost_enabled 0
-    write /sys/module/cpu_boost/parameters/input_boost_freq "0:1036800 1:1036800 2:0 3:0 4:0 5:0 6:0 7:0"
-    write /sys/module/cpu_boost/parameters/dynamic_stune_boost 15
-    write /sys/module/cpu_boost/parameters/input_boost_ms 175
-
-    # set default schedTune value for foreground/top-app (only affects EAS)
-    write /dev/stune/foreground/schedtune.prefer_idle 1
-    write /dev/stune/top-app/schedtune.prefer_idle 1
-    write /dev/stune/top-app/schedtune.boost 1
-    write /dev/stune/rt/schedtune.prefer_idle 1
-    write /dev/stune/rt/schedtune.boost 30
-
-    # Congigure Simple Thermal driver
-    write /sys/kernel/msm_thermal/enabled 0
-    write /sys/kernel/msm_thermal/zone0 "2016000 1958400 42 41"
-    write /sys/kernel/msm_thermal/zone1 "1958400 2016000 43 42"
-    write /sys/kernel/msm_thermal/zone2 "1804800 1958400 46 43"
-    write /sys/kernel/msm_thermal/zone3 "1689600 1804800 48 46"
-    write /sys/kernel/msm_thermal/zone4 "1401600 1689600 51 48"
-    write /sys/kernel/msm_thermal/zone5 "1209600 1401600 54 51"
-    write /sys/kernel/msm_thermal/zone6 "1036800 1209600 56 54"
-    write /sys/kernel/msm_thermal/zone7 "806400 1036800 58 56"
-    write /sys/kernel/msm_thermal/zone8 "652800 806400 60 58"
-    write /sys/kernel/msm_thermal/sampling_ms 8000
-    write /sys/kernel/msm_thermal/enabled 1
-
     # Adjust LMK Values
     write /sys/module/lowmemorykiller/parameters/minfree "18432,23040,27648,32256,55296,80640"
 
@@ -84,7 +48,7 @@ on property:persist.spectrum.profile=0
 
     # CPU values
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 652000
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 2016000
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1804800
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "schedutil"
     write /sys/devices/system/cpu/cpufreq/schedutil/up_rate_limit_us 500
     write /sys/devices/system/cpu/cpufreq/schedutil/down_rate_limit_us 20000
@@ -104,22 +68,14 @@ on property:persist.spectrum.profile=0
     # set default schedTune value for foreground/top-app (only affects EAS)
     write /dev/stune/foreground/schedtune.prefer_idle 1
     write /dev/stune/top-app/schedtune.prefer_idle 1
-    write /dev/stune/top-app/schedtune.boost 1
+    write /dev/stune/top-app/schedtune.boost 0
     write /dev/stune/rt/schedtune.prefer_idle 1
-    write /dev/stune/rt/schedtune.boost 10
+    write /dev/stune/rt/schedtune.boost 0
 
     # Enable input boost configuration
     write /sys/module/cpu_boost/parameters/input_boost_freq "0:1036800"
     write /sys/module/cpu_boost/parameters/dynamic_stune_boost 1
     write /sys/module/cpu_boost/parameters/input_boost_ms 100
-
-    # Setup cpusets
-    write /dev/cpuset/top-app/cpus 0-7
-    write /dev/cpuset/foreground/boost/cpus 0-3,6-7
-    write /dev/cpuset/foreground/cpus 0-3,6-7
-    write /dev/cpuset/background/cpus 0-1
-    write /dev/cpuset/system-background/cpus 0-3
-    write /dev/cpuset/camera-daemon/cpus 0-3
 
 # Performance (based on DrunkSauce Lite)
 on property:persist.spectrum.profile=1
@@ -128,7 +84,7 @@ on property:persist.spectrum.profile=1
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 652000
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 2016000
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "schedutil"
-    write /sys/devices/system/cpu/cpufreq/schedutil/up_rate_limit_us 350
+    write /sys/devices/system/cpu/cpufreq/schedutil/up_rate_limit_us 250
     write /sys/devices/system/cpu/cpufreq/schedutil/down_rate_limit_us 1500
     write /sys/devices/system/cpu/cpufreq/schedutil/iowait_boost_enable 1
 
@@ -152,11 +108,11 @@ on property:persist.spectrum.profile=1
     write /dev/stune/top-app/schedtune.prefer_idle 1
     write /dev/stune/top-app/schedtune.boost 1
     write /dev/stune/rt/schedtune.prefer_idle 1
-    write /dev/stune/rt/schedtune.boost 30
+    write /dev/stune/rt/schedtune.boost 10
 
     # Enable input boost configuration
     write /sys/module/cpu_boost/parameters/input_boost_freq "0:1036800"
-    write /sys/module/cpu_boost/parameters/dynamic_stune_boost 10
+    write /sys/module/cpu_boost/parameters/dynamic_stune_boost 1
     write /sys/module/cpu_boost/parameters/input_boost_ms 175
 
 
@@ -167,7 +123,7 @@ on property:persist.spectrum.profile=2
 
     # CPU values
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 652000
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1804800
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1689000
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "schedutil"
     write /sys/devices/system/cpu/cpufreq/schedutil/up_rate_limit_us 250
     write /sys/devices/system/cpu/cpufreq/schedutil/down_rate_limit_us 20000
@@ -188,9 +144,9 @@ on property:persist.spectrum.profile=2
     # set default schedTune value for foreground/top-app (only affects EAS)
     write /dev/stune/foreground/schedtune.prefer_idle 1
     write /dev/stune/top-app/schedtune.prefer_idle 1
-    write /dev/stune/top-app/schedtune.boost 1
+    write /dev/stune/top-app/schedtune.boost 0
     write /dev/stune/rt/schedtune.prefer_idle 1
-    write /dev/stune/rt/schedtune.boost 10
+    write /dev/stune/rt/schedtune.boost 0
 
     # Enable input boost configuration
     write /sys/module/cpu_boost/parameters/input_boost_freq "0:1036800"
