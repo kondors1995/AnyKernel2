@@ -174,7 +174,7 @@ on property:persist.spectrum.profile=3
     # GPU
     write /sys/class/kgsl/kgsl-3d0/devfreq/governor performance
     write /sys/class/kgsl/kgsl-3d0/devfreq/min_freq 400000000
-    write /sys/class/kgsl/kgsl-3d0/max_gpuclk 650000000
+    write /sys/class/kgsl/kgsl-3d0/max_gpuclk 855000000
     write /sys/class/leds/lcd-backlight/max_brightness 255
     write /sys/module/adreno_idler/parameters/adreno_idler_active 0
 
