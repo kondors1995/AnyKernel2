@@ -28,6 +28,7 @@ on property:sys.boot_completed=1
     write /sys/module/mdss_fb/parameters/backlight_dimmer 0
     # USB Fast Charge
     write /sys/kernel/fast_charge/force_fast_charge 1
+    write /sys/class/power_supply/battery/allow_hvdcp3
 
    #ZRAM
     swapon /dev/block/zram0
@@ -40,6 +41,10 @@ on property:sys.boot_completed=1
     # Adjust LMK Values
     write /sys/module/lowmemorykiller/parameters/minfree "18432,23040,27648,32256,55296,80640"
 
+    # Disable input boost
+    write  /sys/module/cpu_boost/parameters/input_boost_enabled "0"
+    # Disable Touchboost
+    write /sys/module/msm_performance/parameters/touchboost "0"
 
 # Balance (default profile)
 on property:persist.spectrum.profile=0
@@ -47,8 +52,8 @@ on property:persist.spectrum.profile=0
     write /sys/module/workqueue/parameters/power_efficient Y
 
     # CPU values
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 400457
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1804800
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 652000
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 2016000
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "schedutil"
     write /sys/devices/system/cpu/cpufreq/schedutil/up_rate_limit_us 500
     write /sys/devices/system/cpu/cpufreq/schedutil/down_rate_limit_us 20000
@@ -77,7 +82,23 @@ on property:persist.spectrum.profile=0
     write /sys/module/cpu_boost/parameters/dynamic_stune_boost 1
     write /sys/module/cpu_boost/parameters/input_boost_ms 100
 
-    write /sys/module/sync/parameters/fsync_enabled Y
+    # zRAM
+    /system/bin/swapoff /dev/block/zram0
+    write /sys/block/zram0/reset "1"
+    write /sys/block/zram0/disksize "0"
+    write /sys/block/zram0/comp_algorithm "lzo"
+    write /sys/block/zram0/disksize "545259520"
+    /system/bin/mkswap -L 417 /dev/block/zram0
+    /system/bin/swapon /dev/block/zram0
+    write /proc/sys/vm/swappiness "30"
+
+    # Laptop-mode
+    write /proc/sys/vm/laptop_mode "1"
+
+    # Disable input boost
+    write  /sys/module/cpu_boost/parameters/input_boost_enabled "0"
+    # Disable Touchboost
+    write /sys/module/msm_performance/parameters/touchboost "0"
 
 # Performance (based on DrunkSauce Lite)
 on property:persist.spectrum.profile=1
@@ -97,7 +118,7 @@ on property:persist.spectrum.profile=1
     write /sys/class/kgsl/kgsl-3d0/devfreq/governor msm-adreno-tz
     write /sys/class/kgsl/kgsl-3d0/devfreq/min_freq 133000000
     write /sys/class/kgsl/kgsl-3d0/max_gpuclk 650000000
-    write /sys/class/kgsl/kgsl-3d0/devfreq/adrenoboost 2
+    write /sys/class/kgsl/kgsl-3d0/devfreq/adrenoboost 2b
     write /sys/module/adreno_idler/parameters/adreno_idler_active 1
     write /sys/class/leds/lcd-backlight/max_brightness 255
     write /sys/module/adreno_idler/parameters/adreno_idler_active 1
@@ -117,8 +138,18 @@ on property:persist.spectrum.profile=1
     write /sys/module/cpu_boost/parameters/dynamic_stune_boost 1
     write /sys/module/cpu_boost/parameters/input_boost_ms 175
 
-    write /sys/module/sync/parameters/fsync_enabled Y
+    # zRAM
+    /system/bin/swapoff /dev/block/zram0
+    write /sys/block/zram0/reset "1"
+    write /sys/block/zram0/disksize "0"
+    write /sys/block/zram0/comp_algorithm "lz4"
+    write /sys/block/zram0/disksize "1583349760"
+    /system/bin/mkswap -L 417 /dev/block/zram0
+    /system/bin/swapon /dev/block/zram0
+    write /proc/sys/vm/swappiness "60"
 
+    # Laptop-mode
+    write /proc/sys/vm/laptop_mode "0"
 
 # Battery
 on property:persist.spectrum.profile=2
@@ -126,7 +157,7 @@ on property:persist.spectrum.profile=2
     write /sys/module/workqueue/parameters/power_efficient Y
 
     # CPU values
-    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 400457
+    write /sys/devices/system/cpu/cpu0/cpufreq/scaling_min_freq 652000
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq 1689000
     write /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor "schedutil"
     write /sys/devices/system/cpu/cpufreq/schedutil/up_rate_limit_us 250
@@ -141,9 +172,9 @@ on property:persist.spectrum.profile=2
     write /sys/class/kgsl/kgsl-3d0/devfreq/adrenoboost 0
     write /sys/class/leds/lcd-backlight/max_brightness 100
     write /sys/module/adreno_idler/parameters/adreno_idler_active 1
-    write /sys/module/adreno_idler/parameters/adreno_idler_downdifferential 25
-    write /sys/module/adreno_idler/parameters/adreno_idler_idlewait 10
-    write /sys/module/adreno_idler/parameters/adreno_idler_idleworkload 8000
+    write /sys/module/adreno_idler/parameters/adreno_idler_downdifferential 9
+    write /sys/module/adreno_idler/parameters/adreno_idler_idlewait 9
+    write /sys/module/adreno_idler/parameters/adreno_idler_idleworkload 9000
 
     # set default schedTune value for foreground/top-app (only affects EAS)
     write /dev/stune/foreground/schedtune.prefer_idle 1
@@ -157,7 +188,23 @@ on property:persist.spectrum.profile=2
     write /sys/module/cpu_boost/parameters/dynamic_stune_boost 1
     write /sys/module/cpu_boost/parameters/input_boost_ms 100
 
-    write /sys/module/sync/parameters/fsync_enabled Y
+    # zRAM
+    /system/bin/swapoff /dev/block/zram0
+    write /sys/block/zram0/reset "1"
+    write /sys/block/zram0/disksize "0"
+    write /sys/block/zram0/comp_algorithm "deflate"
+    write /sys/block/zram0/disksize "335544320"
+    /system/bin/mkswap -L 417 /dev/block/zram0
+    /system/bin/swapon /dev/block/zram0
+    write /proc/sys/vm/swappiness "1"
+
+    # Laptop-mode
+    write /proc/sys/vm/laptop_mode "5"
+
+    # Disable input boost
+    write  /sys/module/cpu_boost/parameters/input_boost_enabled "0"
+    # Disable Touchboost
+    write /sys/module/msm_performance/parameters/touchboost "0"
 
 # Gaming
 on property:persist.spectrum.profile=3
@@ -180,7 +227,7 @@ on property:persist.spectrum.profile=3
     # GPU
     write /sys/class/kgsl/kgsl-3d0/devfreq/governor performance
     write /sys/class/kgsl/kgsl-3d0/devfreq/min_freq 400000000
-    write /sys/class/kgsl/kgsl-3d0/max_gpuclk 855000000
+    write /sys/class/kgsl/kgsl-3d0/max_gpuclk 650000000
     write /sys/class/leds/lcd-backlight/max_brightness 255
     write /sys/module/adreno_idler/parameters/adreno_idler_active 0
 
@@ -191,4 +238,15 @@ on property:persist.spectrum.profile=3
     write /dev/stune/rt/schedtune.prefer_idle 1
     write /dev/stune/rt/schedtune.boost 30
 
-    write /sys/module/sync/parameters/fsync_enabled N
+    # zRAM
+    /system/bin/swapoff /dev/block/zram0
+    write /sys/block/zram0/reset "1"
+    write /sys/block/zram0/disksize "0"
+    write /sys/block/zram0/comp_algorithm "lz4hc"
+    write /sys/block/zram0/disksize "2097152000"
+    /system/bin/mkswap -L 417 /dev/block/zram0
+    /system/bin/swapon /dev/block/zram0
+    write /proc/sys/vm/swappiness "80"
+
+    # Laptop-mode
+    write /proc/sys/vm/laptop_mode "0"
